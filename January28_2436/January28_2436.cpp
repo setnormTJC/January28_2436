@@ -4,6 +4,7 @@
 #include"searchAlgos.h"
 #include<chrono>
 #include<fstream>
+#include <cassert>
 
 //#include<filesystem>
 
@@ -59,18 +60,9 @@ void demoWritingToACSVFile()
 
 //void callSequentialSearchOnNElement
 
-void demoSequentialSearchOnNElements(const int N)
+long long measureSequentialSearchTime(const int N)
 {
-	//constexpr int N1 = 100;
-	//const? 
-	//constexpr int N2 = 10'000;
 	auto NRandomNumbers = generateRandomNumbersBetwixt0AndN(N);
-	//auto tenThousandRandomNums = generateRandomNumbersBetwixt0AndN(N2); 
-
-	/****************The code that contained bug:/
-	//std::random_device rd{}; //better alternative to passing in time(nullptr) to rng
-	//mt19937 rng(rd);
-	/**************************************/
 
 	/*THE CHANGE THAT I MADE AFTER LECTURE*/
 	std::random_device rd; //better alternative to passing in time(nullptr) to rng
@@ -80,31 +72,90 @@ void demoSequentialSearchOnNElements(const int N)
 	uniform_int_distribution<int> distribution{ 0, N };
 
 	int theRandomNumber = distribution(rng);
-	cout << "Looking for this random number: " << theRandomNumber << "\n";
+	//cout << "Looking for this random number: " << theRandomNumber << "\n";
 
-	std::cin.get();
-	printOneDVector(NRandomNumbers);
+	//std::cin.get();
+	//printOneDVector(NRandomNumbers);
 
-	if (sequentialSearch(NRandomNumbers, theRandomNumber))
-	{
-		cout << "it was found\n";
-	}
+	auto start = std::chrono::high_resolution_clock::now(); 
 
-	else
-	{
-		cout << "Not found\n";
-	}
+	//call the algorithm of interest: 
+	sequentialSearch(NRandomNumbers, theRandomNumber);
 
-	std::cin.get();
+	auto end = std::chrono::high_resolution_clock::now();
+
+	return (end - start).count(); 
 }
+
+/*RECURSIVE approach taken from: 
+https://www.youtube.com/watch?v=MFhxShGxHWc
+*/
+bool binarySearch(const vector<int>& SORTEDnums, const int& targetNumber, int start, int end)
+{
+	assert(std::is_sorted(SORTEDnums.begin(), SORTEDnums.end())); //NOTE: assert is IGNORED in "Release mode" 
+
+	if (start > end)
+	{
+		cout << targetNumber << " not found in the array: \n";
+		printOneDVector(SORTEDnums); 
+
+		return false; //means "not found"  
+	}
+
+	int middle = floor((start + end) / 2);
+
+	if (SORTEDnums[middle] == targetNumber)
+	{
+		cout << "Found at index = " << middle << "\n";
+		return true; 
+	}
+
+	else if (SORTEDnums[middle] > targetNumber)
+	{
+		return binarySearch(SORTEDnums, targetNumber, start, middle - 1);
+	}
+
+	else //middle was "Too low" 
+	{
+		return binarySearch(SORTEDnums, targetNumber, middle + 1, end);
+	}
+}
+
 
 int main()
 {
-	demoSequentialSearchOnNElements(10);
-	demoSequentialSearchOnNElements(100);
-	demoSequentialSearchOnNElements(1'000);
+
+	vector<int> elementCounts = { 10, 100, 1'000/*, 10'000, 100'000, 1'000'000*/ };
+
+	ofstream fout{ "fancyData.csv" };
+
+	for (const auto& N : elementCounts)
+	{
+		//cout << "N = " << elementCount << " elements required  "
+		//	<< measureSequentialSearchTime(elementCount)
+		//	<< " nanoseconds to find (or NOT find) some random #\n";
+
+		//long long timeForSearchingN = measureSequentialSearchTime(N); 
+		//fout << N << "," << timeForSearchingN << "\n";
+
+		auto vecN = generateRandomNumbersBetwixt0AndN(N); 
+		
+		std::sort(vecN.begin(), vecN.end()); 
 
 
+		constexpr int TARGET_VALUE = 212312; 
+
+		binarySearch(vecN, TARGET_VALUE, 0, vecN.size() - 1); 
+
+
+		//cout << "Did the sort algo work? \n";
+		//printOneDVector(vecN); 
+
+		std::cin.get(); //enter a character to continue prog. execution
+
+	}
+
+	fout.close(); 
 
 	//search(oneThousandRandomNums, someNumberBetween0AndOneThousand);
 
