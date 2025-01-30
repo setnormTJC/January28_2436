@@ -53,8 +53,6 @@ void demoWritingToACSVFile()
 	fout << 4 << "," << 12 << "\n";
 	fout << 5 << "," << 15 << "\n";
 
-
-	//cout 
 	fout.close();
 }
 
@@ -90,14 +88,20 @@ long long measureSequentialSearchTime(const int N)
 /*RECURSIVE approach taken from: 
 https://www.youtube.com/watch?v=MFhxShGxHWc
 */
-bool binarySearch(const vector<int>& SORTEDnums, const int& targetNumber, int start, int end)
+bool recursiveBinarySearch(const vector<int>& SORTEDnums, const int& targetNumber, int start, int end,
+	int& recursiveCallCount)
 {
 	assert(std::is_sorted(SORTEDnums.begin(), SORTEDnums.end())); //NOTE: assert is IGNORED in "Release mode" 
+
+
+	recursiveCallCount++;
 
 	if (start > end)
 	{
 		cout << targetNumber << " not found in the array: \n";
 		printOneDVector(SORTEDnums); 
+		
+		cout << "\n\nAnd the number of recursive calls was: " << recursiveCallCount << "\n";
 
 		return false; //means "not found"  
 	}
@@ -112,52 +116,147 @@ bool binarySearch(const vector<int>& SORTEDnums, const int& targetNumber, int st
 
 	else if (SORTEDnums[middle] > targetNumber)
 	{
-		return binarySearch(SORTEDnums, targetNumber, start, middle - 1);
+		return recursiveBinarySearch(SORTEDnums, targetNumber, start, middle - 1, recursiveCallCount);
 	}
 
 	else //middle was "Too low" 
 	{
-		return binarySearch(SORTEDnums, targetNumber, middle + 1, end);
+		return recursiveBinarySearch(SORTEDnums, targetNumber, middle + 1, end, recursiveCallCount);
 	}
 }
+
+void demoBinarySearchAlgoAnalysis()
+{
+	vector<int> binarySearchArraySizes =
+	{
+		(int)pow(2, 3), //8
+		(int)pow(2, 4), //16
+		(int)pow(2, 5), //32
+		(int)pow(2, 6), //etc.
+		(int)pow(2, 7),
+	};
+
+
+	for (int currentArraySize : binarySearchArraySizes)
+	{
+		vector<int> vecN;
+
+		for (int i = 1; i <= currentArraySize; ++i)
+		{
+			vecN.push_back(i); //ex: for arraySize = 8, this array will be {1, 2, 3, ...8}
+		}
+
+		//now "force" a worst case scenario - pick a number outside of the array's range: 
+		int targetValue = currentArraySize * 100;
+
+		int recursiveCallCount = 0; //track the number of calls -> for ALGORITHM ANALYSIS
+		recursiveBinarySearch(vecN, targetValue, 0, vecN.size() - 1, recursiveCallCount);
+
+
+		std::cin.get();
+	}
+
+}
+
+/*This function was implemented by Copilot - HHOORAY!*/
+//void testBinarySearch() {
+//	// Test case 1: Element is present in the middle
+//	{
+//		vector<int> sortedNums = { 1, 2, 3, 4, 5 };
+//		int target = 3;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == true);
+//	}
+//
+//	// Test case 2: Element is present at the beginning
+//	{
+//		vector<int> sortedNums = { 1, 2, 3, 4, 5 };
+//		int target = 1;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == true);
+//	}
+//
+//	// Test case 3: Element is present at the end
+//	{
+//		vector<int> sortedNums = { 1, 2, 3, 4, 5 };
+//		int target = 5;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == true);
+//	}
+//
+//	// Test case 4: Element is not present
+//	{
+//		vector<int> sortedNums = { 1, 2, 3, 4, 5 };
+//		int target = 6;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == false);
+//	}
+//
+//	// Test case 5: Empty array
+//	{
+//		vector<int> sortedNums = {};
+//		int target = 1;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == false);
+//	}
+//
+//	// Test case 6: Single element array, element is present
+//	{
+//		vector<int> sortedNums = { 1 };
+//		int target = 1;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == true);
+//	}
+//
+//	// Test case 7: Single element array, element is not present
+//	{
+//		vector<int> sortedNums = { 1 };
+//		int target = 2;
+//		assert(binarySearch(sortedNums, target, 0, sortedNums.size() - 1) == false);
+//	}
+//
+//	cout << "All test cases passed!" << std::endl;
+//}
 
 
 int main()
 {
 
+	demoBinarySearchAlgoAnalysis(); 
+
+
+	//testBinarySearch(); 
+	std::cin.get(); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	vector<int> elementCounts = { 10, 100, 1'000/*, 10'000, 100'000, 1'000'000*/ };
 
-	ofstream fout{ "fancyData.csv" };
 
 	for (const auto& N : elementCounts)
 	{
-		//cout << "N = " << elementCount << " elements required  "
-		//	<< measureSequentialSearchTime(elementCount)
-		//	<< " nanoseconds to find (or NOT find) some random #\n";
-
-		//long long timeForSearchingN = measureSequentialSearchTime(N); 
-		//fout << N << "," << timeForSearchingN << "\n";
 
 		auto vecN = generateRandomNumbersBetwixt0AndN(N); 
 		
 		std::sort(vecN.begin(), vecN.end()); 
 
+		//INTENTIONALLY search for a value that will not be in the array
+		//trigger a "worst-case" scenario:
+		int TARGET_VALUE = N * 50; 
 
-		constexpr int TARGET_VALUE = 212312; 
-
-		binarySearch(vecN, TARGET_VALUE, 0, vecN.size() - 1); 
-
-
-		//cout << "Did the sort algo work? \n";
-		//printOneDVector(vecN); 
+		//binarySearch(vecN, TARGET_VALUE, 0, vecN.size() - 1); 
 
 		std::cin.get(); //enter a character to continue prog. execution
 
 	}
 
-	fout.close(); 
-
-	//search(oneThousandRandomNums, someNumberBetween0AndOneThousand);
 
 }
 
