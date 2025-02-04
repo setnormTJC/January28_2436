@@ -1,4 +1,4 @@
-// Moving on to std library algos.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// Moving on to std library algos.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include<algorithm>
@@ -27,7 +27,6 @@ int main()
 
     std::vector<std::string> names = { "Alice", "Bob", "Carol", "Darth" }; //the usual "cryptographic" actors
     
-    
     while (std::next_permutation(names.begin(), names.end()))
     {
         for (const auto& currentName : names)
@@ -37,4 +36,57 @@ int main()
 
         std::cout << "\n";
     }
+
+    std::cout << "\n\n\n";
+    //add some context to that previous output: 
+    while (std::next_permutation(names.begin(), names.end()))
+    {
+        for (size_t i = 0; i < names.size(); i += 2)
+        {
+            if (i + 1 < names.size())
+            {
+                std::cout << names[i] << " is dating " << names[i + 1] << "\n";
+            }
+        }
+        std::cout << "\n";
+    }
+
+    //SCRABBLE-type algo: 
+    std::vector<char> name =
+    {
+        //'E',
+        //'l',
+        //'s',
+        //'e'
+
+        'A', 
+        'i',
+        'd',
+        'e',
+        'n'
+
+        /*'M', 
+        'a', 
+        's', 
+        'e', 
+        'd', 
+        'a'*/
+    };
+    std::cout << "\n\n";
+    while (std::next_permutation(name.begin(), name.end()))
+    {
+        for (char currentLetter : name)
+        {
+            std::cout << currentLetter;
+        }
+        std::cout << "\n";
+    }
+
+    //ANAGRAMS! in other languages ... 
+    //情人 -> lover 
+    //人情 -> favor
+
+    //会社 -> company
+    //社会 -> society
+
 }
