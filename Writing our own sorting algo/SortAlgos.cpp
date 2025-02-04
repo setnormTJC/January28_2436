@@ -31,5 +31,39 @@ void naiveSort(vector<string>& vectorOfStrings)
 			}
 		}
 	}
+}
 
+
+void naiveSort(vector<int>& nums)
+{
+	for (int outer = 0; outer < nums.size() - 1; ++outer)
+	{
+		for (int inner = outer + 1; inner < nums.size(); ++inner)
+		{
+			if (nums[inner] < nums[outer])
+			{
+				std::swap(nums[inner], nums[outer]);
+			}
+		}
+	}
+}
+
+vector<int> generateNRandomNumbers(const int N)
+{
+	vector<int> nRandomNumbers; 
+
+	random_device rd{}; 
+
+	mt19937 rng{ rd()};
+
+	uniform_int_distribution<int> distribution(0, N); 
+
+	for (int i = 0; i < N; ++i)
+	{
+		int randomNumber = distribution(rng); 
+
+		nRandomNumbers.push_back(randomNumber);
+	}
+
+	return nRandomNumbers;
 }
