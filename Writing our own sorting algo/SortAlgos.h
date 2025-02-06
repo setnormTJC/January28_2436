@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include<algorithm> 
 #include <iostream>
 #include<random>
 #include<string> 
@@ -15,9 +16,13 @@ using std::mt19937, std::random_device, std::uniform_int_distribution;
 
 
 
-void printVec(const vector<string>& vectorOfStrings);
 
-void demoSTDSwapFunction(vector<string>& vectorOfStrings, const int firstIndex, const int secondIndex);
+void demoSwapFunction(vector<string>& vectorOfStrings, const int firstIndex, const int secondIndex);
+
+
+vector<int> generateNRandomNumbers(const int N);
+
+void printVec(const vector<string>& vectorOfStrings);
 
 //template<typename T> //do later ... if desired
 /*
@@ -30,4 +35,6 @@ void naiveSort(vector<string>& vectorOfStrings);
 */
 void naiveSort(vector<int>& nums);
 
-vector<int> generateNRandomNumbers(const int N);
+void MiracleSort(vector<int>& nums);
+
+void MonkeySort(vector<string>& names);
