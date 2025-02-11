@@ -75,6 +75,8 @@ void naiveSort(vector<int>& nums)
 	cout << nums.size() << " elements required " << numberOfComparisions
 		<< " COMPARISONS and " << numberOfSwaps << " swaps\n";
 
+	//sum of xi from i = 0 to N = (N(N-1)/2)
+
 }
 
 /*What is the time complexity of THIS algorithm? */
@@ -83,6 +85,8 @@ void MiracleSort(vector<int>& nums)
 	while (!std::is_sorted(nums.begin(), nums.end()))
 	{
 		//Wait for Zeus to come down from Mt. Olympus and sort the array
+
+		//std::this_thread::sleep_for(1ms); //<thread>, <chrono> std::chrono_literals
 	}
 }
 
@@ -109,3 +113,11 @@ void printVec(const vector<string>& vectorOfStrings)
 	}
 }
 
+
+void printVec(const vector<int>& vectorOfInts)
+{
+	for (const auto& currentNumber : vectorOfInts)
+	{
+		cout << currentNumber << " ";
+	}
+}

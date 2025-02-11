@@ -83,21 +83,108 @@ void demoNaiveSortBenchmarking()
 	fout.close();
 }
 
-
-int main()
+void demoMonkeySort_ForNEquals7()
 {
 	vector<string> names =
 	{
 		"Alice",
 		"Carol",
-		"Bob", 
-		"Darth", 
-		"Eve", 
-		"Frank", 
+		"Bob",
+		"Darth",
+		"Eve",
+		"Frank",
 		"Gus"
-	}; 
+	};
 
-	MonkeySort(names); 
+	MonkeySort(names);
 	cout << "Done\n";
+
+}
+
+template<typename T>
+int partition(vector<T>& list, int first, int last)
+{
+	T pivot = list[first];
+	int left = first + 1;
+	int right = last;
+
+	while (true)
+	{
+		while (left <= right && list[left] <= pivot)
+		{
+			left++;
+		}
+
+		while (left <= right && list[right] >= pivot)
+		{
+			right--;
+		}
+
+		if (left > right)
+		{
+			break;
+		}
+
+		std::swap(list[left], list[right]);
+	}
+
+	std::swap(list[first], list[right]);
+	return right;
+}
+
+template<typename T>
+void quickSort(vector<T>& list, int first, int last)
+{
+	if (first < last)
+	{
+		int pivotLocation = partition(list, first, last);
+		quickSort(list, first, pivotLocation - 1);
+		quickSort(list, pivotLocation + 1, last);
+	}
+}
+
+int main()
+{
+	//IN order of decreasing efficiency, the sorting algos: 
+	//1) Miracle sort -> O(infinity) Big O (Little O)
+	//2) Bogosort (AKA: MonkeySort) -> O(N!)
+	//3) NaiveSort(nested for loops -> O(N^2)
+	//4) QuickSort is coming, and it is O(N*log2(N))
+
+	//one more little demo of NaiveSort:
+	//vector<int> alreadySortedNums = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+	//cout << "How many comparison AND SWAPS for N = 10 with ALREADY SORTED array: \n";
+	//naiveSort(alreadySortedNums); 
+
+
+	//vector<int> worstCaseInput = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+	//cout << "How many comparison AND SWAPS for N = 10 with REVERSE ORDER array: \n";
+	//naiveSort(worstCaseInput);
+
+	constexpr int N = 100'000; 
+
+	auto vecN = generateNRandomNumbers(N); 
+	auto copyOfVecN = vecN; //make a copy so that after we sort the original using NaiveSort, we can 
+							//compare the quickSort time using THE SAME input array 
+
+	auto startQuickTimer = std::chrono::high_resolution_clock::now(); 
+	quickSort(vecN, 0, vecN.size() - 1);
+	auto endQuickTimer = std::chrono::high_resolution_clock::now();
+
+	cout.imbue(std::locale("")); 
+	cout << "Quicksort for N = " << N << " took this many nanoseconds: "
+		<< (endQuickTimer - startQuickTimer).count() << "\n";
+	//printVec(vecN); 
+
+	auto startSLOWTimer = std::chrono::high_resolution_clock::now(); 
+	naiveSort(copyOfVecN); 
+	auto endSLOWTimer = std::chrono::high_resolution_clock::now();
+
+	cout << "Naive sort (selection sort) took this many nanoseconds: "
+		<< (endSLOWTimer - startSLOWTimer).count() << "\n";
+
+
+
 
 }

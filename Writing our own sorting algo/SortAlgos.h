@@ -24,6 +24,8 @@ vector<int> generateNRandomNumbers(const int N);
 
 void printVec(const vector<string>& vectorOfStrings);
 
+void printVec(const vector<int>& vectorOfInts);
+
 //template<typename T> //do later ... if desired
 /*
 @param this overload takes STRINGS
@@ -38,3 +40,5 @@ void naiveSort(vector<int>& nums);
 void MiracleSort(vector<int>& nums);
 
 void MonkeySort(vector<string>& names);
+
+
